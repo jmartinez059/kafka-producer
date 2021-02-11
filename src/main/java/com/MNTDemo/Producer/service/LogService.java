@@ -19,44 +19,56 @@ public class LogService {
     @Autowired
     private LogRepository logRepository;
 
-    public List<LogObject> getLogs() {
+    public List<String> getLogs() {
         logger.info("LogService called, making call to LogRepository");
-        List<LogObject> logs = new ArrayList<>();
+        List<LogObject> logObjects = new ArrayList<>();
         try {
-            logs = logRepository.findAll();
-            logger.info(String.format("Logs:\n%s", logs));
+            logObjects = logRepository.findAll();
         } catch (Exception e) {
-            logger.error("LogService caught exception calling LogRepository.getLogs():");
-            e.printStackTrace();
+            logger.error("LogService caught exception calling LogRepository.getLogs()");
             throw e;
         }
         logger.info("LogService received response from LogRepository, returning logs to LogController");
-        return logs;
+        return convertLogObjectListToStringList(logObjects);
     }
 
-    public List<LogObject> getLogsByType(LogType logType) {
+    public List<String> getLogsByType(LogType logType) {
         logger.info("LogService called, making call to LogRepository");
-        List<LogObject> logs = new ArrayList<>();
+        List<LogObject> logObjects = new ArrayList<>();
         try {
-            logs = logRepository.findByType(logType);
+            logObjects = logRepository.findByType(logType);
         } catch (Exception e) {
             logger.error("LogService caught exception calling LogRepository.getLogs():\n", e.getStackTrace());
             throw e;
         }
         logger.info("Received response from LogRepository, returning logs to LogController");
-        return logs;
+        return convertLogObjectListToStringList(logObjects);
     }
 
-    public List<LogObject> getLogsByService(String service) {
+    public List<String> getLogsByService(String service) {
         logger.info("LogService called, making call to LogRepository");
-        List<LogObject> logs = new ArrayList<>();
+        List<LogObject> logObjects = new ArrayList<>();
         try {
-            logs = logRepository.findByService(service);
+            logObjects = logRepository.findByService(service);
         } catch (Exception e) {
             logger.error("LogService caught exception calling LogRepository.getLogs():\n", e.getStackTrace());
             throw e;
         }
         logger.info("Received response from LogRepository, returning logs to LogController");
+        return convertLogObjectListToStringList(logObjects);
+    }
+
+    public String convertLogObjectToLogString(LogObject logObject) {
+        String log = String.format("[%s] %s:%s:%s - %s",
+                logObject.getTimestamp(), logObject.getService(), logObject.getClazz(), logObject.getType(), logObject.getMessage());
+        return log;
+    }
+
+    public List<String> convertLogObjectListToStringList(List<LogObject> logObjects) {
+        List<String> logs = new ArrayList<>();
+        logObjects.forEach(logObject -> {
+            logs.add(convertLogObjectToLogString(logObject));
+        });
         return logs;
     }
 }

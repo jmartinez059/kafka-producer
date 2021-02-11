@@ -57,8 +57,8 @@ public class LogServiceTest {
     @Test
     public void getLogs_shouldReturnListOfLogs() {
         when(logRepository.findAll()).thenReturn(logObjects);
-        List<LogObject> response = logService.getLogs();
-        Assert.assertEquals(logObjects, response);
+        List<String> response = logService.getLogs();
+        Assert.assertEquals(logService.convertLogObjectListToStringList(logObjects), response);
     }
 
     @Test
@@ -66,8 +66,8 @@ public class LogServiceTest {
         List<LogObject> logObjectsFromService_1 = new ArrayList<>();
         logObjectsFromService_1.add(logObject1);
         when(logRepository.findByService("Test Service 1")).thenReturn(logObjectsFromService_1);
-        List<LogObject> response = logService.getLogsByService("Test Service 1");
-        Assert.assertEquals(logObjectsFromService_1, response);
+        List<String> response = logService.getLogsByService("Test Service 1");
+        Assert.assertEquals(logService.convertLogObjectListToStringList(logObjectsFromService_1), response);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class LogServiceTest {
         List<LogObject> logObjectWithType_ERROR = new ArrayList<>();
         logObjectWithType_ERROR.add(logObject2);
         when(logRepository.findByType(LogType.ERROR)).thenReturn(logObjectWithType_ERROR);
-        List<LogObject> response = logService.getLogsByType(LogType.ERROR);
-        Assert.assertEquals(logObjectWithType_ERROR, response);
+        List<String> response = logService.getLogsByType(LogType.ERROR);
+        Assert.assertEquals(logService.convertLogObjectListToStringList(logObjectWithType_ERROR), response);
     }
 }

@@ -26,23 +26,20 @@ public class KafkaProducerService {
     private KafkaTemplate<String, String> kafkaTemplate;
 
     @Autowired
+    private LogService logService;
+
+    @Autowired
     private LogRepository logRepository;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     public void sendMessage(LogObject logObject) {
 
-        String logObjectJsonString= "";
         String timestamp = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Timestamp(System.currentTimeMillis()));
         logObject.setTimestamp(timestamp);
-        try {
-            logger.info(String.format("LogController received request:\n %s", logObject));
-            logObjectJsonString = objectMapper.writeValueAsString(logObject);
-            logRepository.save(logObject);
-        } catch (JsonProcessingException e) {
-            logger.error("KafkaProducerService caught exception while mapping logObject to json string:\n" + e.getStackTrace());
-        }
-        logger.info(String.format("Sending message to topic " + topic + ":\n\t %s", logObjectJsonString));
+        logger.info(String.format("LogController received request:\n %s", logObject));
+        logRepository.save(logObject);
+        String logObjectJsonString = logService.convertLogObjectToLogString(logObject);
         kafkaTemplate.send(topic, logObjectJsonString);
         logger.info("Successfully sent message to topic " + topic);
     }
