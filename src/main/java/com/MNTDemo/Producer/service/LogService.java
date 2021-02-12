@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,5 +72,10 @@ public class LogService {
             logs.add(convertLogObjectToLogString(logObject));
         });
         return logs;
+    }
+
+    public String getTimeStamp() {
+        String timestamp = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Timestamp(System.currentTimeMillis()));
+        return timestamp;
     }
 }

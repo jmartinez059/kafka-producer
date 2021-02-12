@@ -27,6 +27,7 @@ public class LogController {
 
     @PostMapping("/log")
     public ResponseEntity<LogObject> messageToTopic(@RequestBody LogObject logObject) {
+        logObject.setTimestamp(logService.getTimeStamp());
         logger.info(String.format("Received log event from %s", logObject.getService()));
         this.kafkaProducerService.sendMessage(logObject);
         return new ResponseEntity<>(logObject, HttpStatus.OK);
@@ -35,6 +36,7 @@ public class LogController {
     @PostMapping("/logBatch")
     public ResponseEntity<LogObject> batchMessagesToTopic(@RequestBody List<LogObject> logObjects) {
         logObjects.forEach(logObject -> {
+            logObject.setTimestamp(logService.getTimeStamp());
             this.kafkaProducerService.sendMessage(logObject);
         });
         return new ResponseEntity<>(HttpStatus.OK);

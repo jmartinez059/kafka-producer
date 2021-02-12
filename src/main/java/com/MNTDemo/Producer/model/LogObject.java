@@ -73,10 +73,11 @@ public class LogObject {
     @Override
     public String toString() {
         return "LogObject{" +
-                "service='" + service + '\'' +
-                ", class='" + clazz + '\'' +
+                ", service='" + service + '\'' +
+                ", clazz='" + clazz + '\'' +
                 ", message='" + message + '\'' +
-                ", type='" + type + '\'' +
+                ", type=" + type +
+                ", timestamp='" + timestamp + '\'' +
                 '}';
     }
 }

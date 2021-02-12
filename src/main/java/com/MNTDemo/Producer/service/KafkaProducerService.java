@@ -34,10 +34,7 @@ public class KafkaProducerService {
     ObjectMapper objectMapper = new ObjectMapper();
 
     public void sendMessage(LogObject logObject) {
-
-        String timestamp = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").format(new Timestamp(System.currentTimeMillis()));
-        logObject.setTimestamp(timestamp);
-        logger.info(String.format("LogController received request:\n %s", logObject));
+        logger.info(String.format("KafkaProducerService sendMessage() called:\n %s", logObject));
         logRepository.save(logObject);
         String logObjectJsonString = logService.convertLogObjectToLogString(logObject);
         kafkaTemplate.send(topic, logObjectJsonString);
